@@ -1,0 +1,244 @@
+1.安装文档
+https://docs.microsoft.com/zh-cn/windows/wsl/install-win10
+ 
+更换源
+
+
+
+-----------更改系统默认为中文
+sudo dpkg-reconfigure locales 
+
+安装 mscore字体
+sudo apt-get dist-upgrade
+sudo apt install ttf-mscorefonts-installer
+
+安装powerline 
+sudo apt-get install  powerline
+
+安装windows powerline 字体
+直接下载zip压缩包，右键install.ps1文件，“使用PowerShell运行”即可。
+
+设置bash 启动powerline
+POWERLINE_SCRIPT=/usr/share/powerline/bindings/bash/powerline.sh
+if [ -f $POWERLINE_SCRIPT ]; then
+   source $POWERLINE_SCRIPT
+fi
+
+设定windows terminal 字体
+
+ {
+                "guid": "{07b52e3e-de2c-5db4-bd2d-ba144ed6c273}",
+                "hidden": false,
+                "name": "Ubuntu-20.04",
+                "source": "Windows.Terminal.Wsl",
+               // "fontFace": "Fira Mono for Powerline",
+                "fontFace": "Inconsolata for Powerline",
+                "fontSize": 12,
+                "colorScheme": "Ubuntu",  //这里的color要和后面的schemes中的一致
+                "useAcrylic" : false,    // 是否启用窗口透明度，效果类似毛玻璃特效
+                "acrylicOpacity" : 0.6 // 窗口透明度
+            }
+
+安装中文 man
+1.sudo apt-get install manpages-zh # 系统会自动下载并安装
+2.vi ~/.bashrc # 编辑家目录下的bash配置文件
+3.在最后一行输入：alias zman='man -M /usr/share/man/zh_CN' # 将中文的man命令重命名为zman命令，之后保存并退出编辑
+4.source ~/.bashrc # 重新运行.bashrc文件
+
+#显示logo系统信息
+sudo apt install neofetch
+
+cowsay
+for i in $(cowsay -l); do cowsay -f $i "$i"; done
+
+Linux系统下有一个好玩的命令: figlet，这个命令将普通终端文本转换为大字母，如下所示：
+
+linuxidc@linuxidc:~$ figlet Linuxidc.com
+
+看版本
+wsl -l -v
+
+wsl --set-default-version 2
+
+#安装主题
+apt-get install adwaita-icon-theme-full
+
+=====================================
+
+#arch
+vim /etc/pacman.d/mirrorlist   
+查找aliyun ,把前面的#注释
+
+2.更新并初始化
+pacman -Syyu
+pacman-key --init
+pacman-key --populate
+
+3. 安装基本软件
+#pacman -S base base-devel wget git curl  neofetch
+pacman -S base wget git curl  neofetch
+
+
+4. 安装gnome
+#pacman -S gnome
+
+#建议安装下面软件，不要安装整个gnome
+看图软件 eog
+文档查看器 Evince
+解压 file-roller
+文件管理器 nautilus
+快速预览  sushi
+帮助 yelp
+文本编辑器 gedit
+视频播放器 smplayer
+ pacman -S inetutils  （telnet命令）
+
+5.安装中文字体
+ pacman -S wqy-microhei ttf-dejavu wqy-zenhei wqy-microhei wqy-bitmapfont
+
+
+
+6.安装libreoffice
+pacman -S libreoffice
+
+安装中文语言
+pacman -S libreoffice-fresh-zh-cn
+
+
+7.设置中文
+vi /etc/locale.gen
+注释en_US.UTF-8 UTF-8
+启用 zh_CN.UTF-8 UTF-8
+刷新
+locale-gen
+编辑 /etc/locale.conf
+改成zh_CN
+
+
+8. 修改root密码
+passwd 
+
+9.添加一个普通用户（可选）
+添加普通用户（加入wheel组）并设置密码
+
+useradd -m -G wheel ford
+passwd  ford
+把vim链接到vi上
+
+ln -s /usr/bin/vim /usr/bin/vi
+给wheel组加sudo权限
+
+visudo
+在打开的配置文件中取消下列行的注释，然后保存退出
+
+%wheel ALL=(ALL:ALL) ALL
+试验sudo权限
+
+sudo pacman -Syyu
+
+10.切换默认登录用户，目前登录是root
+到wsl 的安装目录，执行 
+ D:\linux\arch\Arch> .\Arch.exe  config --default-user ford
+
+
+
+
+
+
+更新系统
+sudo pacman --sync --refresh
+sudo pacman --sync --sysupgrade
+
+更新系统包
+sudo pacman -Syu
+
+
+alias cp='cp -i'
+alias egrep='egrep --color=auto'
+alias fgrep='fgrep --color=auto'
+alias grep='grep --color=auto'
+alias l.='ls -d .* --color=auto'
+alias ll='ls -l --color=auto'
+alias ls='ls --color=auto'
+alias mv='mv -i'
+alias rm='rm -i'
+alias which='alias | /usr/bin/which --tty-only --read-alias --show-dot --show-tilde'
+
+powershell 管理员运行下面指令
+更新到wslg
+wsl --update
+
+
+crontab
+// install
+sudo pacman -S cronie
+// 开机启动
+systemctl enable cronie.service
+// 启动
+systemctl start cronie.service
+
+在 Arch Linux 上安装 AUR 助手
+sudo pacman -S git
+sudo git clone https://aur.archlinux.org/yay-git.git
+cd yay
+makepkg -si
+
+安装后，你可以使用 yay 命令来安装软件包：
+
+yay -S package_name
+
+ 
+
+
+
+二步：新建普通用户
+默认只能用普通用户登录，不能用root用户登录系统，需要root权限，可以通过sudo命令进行提权
+添加用户：
+useradd -m -G wheel username                ## 新建用户，为weel组，username为用户名
+
+passwd username                                ## 设置新用户密码
+第三步：配置sudo
+命令：
+
+pacman -S sudo                                  ## 安装sudo软件包
+
+vim /etc/sudoers                             ## 编辑sudo配置文件
+
+%wheel ALL=(ALL)ALL                             ## 设置wheel组权限
+
+ln -s 源文件 目标文件
+把D盘连接到home目录
+ln -s /mnt/d . 
+
+arch logo 位置
+/usr/share/pixmaps
+
+知道繁体解压cp950
+       简体       cp936
+
+
+ sudo pacman -S net-tools dnsutils inetutils iproute2
+
+
+
+unzip -O cp950  BPM培訓教材及習題_20180419.zip
+
+(org.gnome.Nautilus:619): dconf-WARNING **: 08:36:24.918: failed to commit changes to dconf: Cannot spawn a message bus without a machine-id: Invalid machine ID in /var/lib/dbus/machine-id or /etc/machine-id
+
+缺少文件/var/lib/dbus/machine-id，就执行如下命令生成一个：
+
+#dbus-uuidgen > /var/lib/dbus/machine-id
+
+dbus-launch
+
+查看隐藏的文件
+[ford]$ du -sh .[!.]*
+8.0K    .bash_history
+4.0K    .bash_logout
+4.0K    .bash_profile
+4.0K    .bashrc
+159M    .cache
+31M     .config
+4.0K    .fonts.conf
+16K     .kde4
+228G    .local
